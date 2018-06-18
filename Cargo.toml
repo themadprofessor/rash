@@ -2,6 +2,7 @@
 name = "rash"
 version = "0.1.0"
 authors = ["Stuart Reilly <stu@reilly-family.co.uk>"]
+readme = "Readme.md"
 
 [dependencies]
 rust-crypto = "0.2"
