@@ -53,7 +53,6 @@ fn fill<D, R>(digest: &mut D, input: &mut R) -> Result<(), Error> where D: Input
         if input.read(&mut buf).map_err(Error::from)? == 0 {
             break;
         } else {
-            println!("Adding 1024 bytes");
             digest.process(&buf);
         }
     };
@@ -64,11 +63,13 @@ fn args<'a>() -> ArgMatches<'a> {
     app_from_crate!()
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .subcommand(SubCommand::with_name("md5")
-            .about("md5 algorithm"))
+            .about("MD5 algorithm")
+            .long_about("MD5 algorithm. This algorithm has known vulnerabilities, use a more modern algorithm."))
         .subcommand(SubCommand::with_name("whirlpool")
             .about("whirlpool algorithm"))
         .subcommand(SubCommand::with_name("sha1")
-            .about("SHA1 algorithm"))
+            .about("SHA1 algorithm")
+            .long_about("SHA1 algorithm. This algorithm has known vulnerabilities, use a more modern algorithm."))
         .subcommand(SubCommand::with_name("ripemd160")
             .about("Ripemd160 algorithm"))
         .subcommand(SubCommand::with_name("blake2b")
@@ -111,7 +112,7 @@ fn args<'a>() -> ArgMatches<'a> {
                 .default_value("512")
                 .possible_values(&["256", "512"])))
         .subcommand(SubCommand::with_name("sha3")
-            .about("SHA3 algorithms")
+            .about("SHA3 algorithm")
             .arg(Arg::with_name("len")
                 .short("l")
                 .long("length")
@@ -129,7 +130,7 @@ fn args<'a>() -> ArgMatches<'a> {
                 .help("SHA3 Algorithm")
                 .long_help("The SHA3 algorithm to use. If not given, sha3 is assumed. See len's help for length algorithm combinations.")
                 .takes_value(true)
-                .possible_values(&["sha3", "shake", "keccak"])
+                .possible_values(&["sha3", "keccak"])
                 .default_value("sha3"))
             .arg(Arg::with_name("var")
                 .short("v")
@@ -139,6 +140,21 @@ fn args<'a>() -> ArgMatches<'a> {
                 .takes_value(true)
                 .possible_values(&["256", "512"])
                 .default_value("512")))
+        .subcommand(SubCommand::with_name("shake")
+            .about("Shake algorithm")
+            .arg(Arg::with_name("len")
+                .short("l")
+                .long("length")
+                .help("Length of output hash")
+                .long_help("Length of output hash. Can be any positive integer.")
+                .takes_value(true)
+                .required(true))
+            .arg(Arg::with_name("var")
+                .short("v")
+                .long("variant")
+                .help("Shake variant")
+                .possible_values(&["128", "256"])
+                .default_value("256")))
         .subcommand(SubCommand::with_name("groestl")
             .about("Groestl Algorithm")
             .arg(Arg::with_name("len")
@@ -187,6 +203,23 @@ fn get_alg<'a, R>(matches: &ArgMatches<'a>, input: &mut R) -> Result<String, Err
                 _ => Err(failure::err_msg("invalid SHA2 algorithm"))
             }
         },
+        ("shake", Some(matches)) => {
+            match matches.value_of("var").unwrap_or_else(|| "512").parse().map_err(Error::from)? {
+                128 => calc_hash_extendable(sha3::Shake128::default(),
+                                            input,
+                                            matches.value_of("len")
+                                                .ok_or_else(|| failure::err_msg("missing length"))?
+                                                .parse()
+                                                .map_err(Error::from)?),
+                256 => calc_hash_extendable(sha3::Shake256::default(),
+                                            input,
+                                            matches.value_of("len")
+                                                .ok_or_else(|| failure::err_msg("missing length"))?
+                                                .parse()
+                                                .map_err(Error::from)?),
+                _ => Err(failure::err_msg("invalid variant"))
+            }
+        },
         ("sha3", Some(matches)) => {
             match matches.value_of("alg").unwrap_or_else(|| "sha3") {
                 "sha3" => match matches.value_of("len").unwrap_or_else(|| "512").parse().map_err(Error::from)? {
@@ -195,21 +228,6 @@ fn get_alg<'a, R>(matches: &ArgMatches<'a>, input: &mut R) -> Result<String, Err
                     384 => calc_hash_fixed(sha3::Sha3_384::new(), input),
                     512 => calc_hash_fixed(sha3::Sha3_512::new(), input),
                     _ => Err(failure::err_msg("invalid length for SHA3"))
-                },
-                "shake" => match matches.value_of("var").unwrap_or_else(|| "512").parse().map_err(Error::from)? {
-                    256 => calc_hash_extendable(sha3::Shake256::default(),
-                                                input,
-                                                matches.value_of("len")
-                                                    .ok_or_else(|| failure::err_msg("missing length"))?
-                                                    .parse()
-                                                    .map_err(Error::from)?),
-                    512 => calc_hash_extendable(sha3::Shake512::default(),
-                                                input,
-                                                matches.value_of("len")
-                                                    .ok_or_else(|| failure::err_msg("missing length"))?
-                                                    .parse()
-                                                    .map_err(Error::from)?),
-                    _ => Err(failure::err_msg("invalid length"))
                 },
                 "keccak" => match matches.value_of("len").unwrap_or_else(|| "512").parse().map_err(Error::from)? {
                     224 => calc_hash_fixed(sha3::Keccak224::new(), input),
