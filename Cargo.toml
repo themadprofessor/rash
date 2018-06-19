@@ -1,6 +1,6 @@
 [package]
 name = "rash"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Stuart Reilly <stu@reilly-family.co.uk>"]
 readme = "Readme.md"
 publish = true
