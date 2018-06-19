@@ -9,6 +9,7 @@ description = "Rust-based file hashing tool"
 categories = ["cryptography", "command-line-utilities"]
 keywords = ["hash", "digest", "crypto", "sha3", "md5"]
 license = "MIT/Apache-2.0"
+exclude = [".idea/*", ".gitignore", "rash.iml"]
 
 [dependencies]
 failure = "0.1"
