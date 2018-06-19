@@ -8,6 +8,7 @@ extern crate sha1;
 extern crate whirlpool;
 extern crate sha2;
 extern crate sha3;
+extern crate groestl;
 
 use failure::Error;
 use clap::{Arg, SubCommand, AppSettings, ArgMatches};
@@ -95,7 +96,7 @@ fn args<'a>() -> ArgMatches<'a> {
             .arg(Arg::with_name("len")
                 .short("l")
                 .long("length")
-                .help("Length of output help")
+                .help("Length of output hash")
                 .long_help("Length of the output hash. Supported lengths with algorithms:\
                 \n\talg:\tlen\
                 \n\tsha3:\t244, 256, 384, 512\
@@ -111,6 +112,15 @@ fn args<'a>() -> ArgMatches<'a> {
                 .takes_value(true)
                 .possible_values(&["sha3", "keccak"])
                 .default_value("sha3")))
+        .subcommand(SubCommand::with_name("groestl")
+            .about("Groestl Algorithm")
+            .arg(Arg::with_name("len")
+                .short("l")
+                .long("length")
+                .help("Length of output hash")
+                .possible_values(&["224", "256", "384", "512"])
+                .default_value("512")
+                .takes_value(true)))
         .arg(Arg::with_name("FILE")
             .help("File to calculate the hash of")
             .global(true))
@@ -169,6 +179,15 @@ fn get_alg<'a, R>(matches: &ArgMatches<'a>, input: &mut R) -> Result<String, Err
                 _ => Err(failure::err_msg("invalid SHA3 algorithm"))
             }
         },
+        ("groestl", Some(matches)) => {
+            match matches.value_of("len").unwrap().parse().map_err(Error::from)? {
+                224 => calc_hash(groestl::Groestl224::new(), input),
+                256 => calc_hash(groestl::Groestl256::new(), input),
+                384 => calc_hash(groestl::Groestl384::new(), input),
+                512 => calc_hash(groestl::Groestl512::new(), input),
+                _ => Err(failure::err_msg("invalid length for Groestl"))
+            }
+        }
         _ => Err(failure::err_msg("unknown algorithm"))
     }
 }

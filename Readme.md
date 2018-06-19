@@ -11,6 +11,7 @@ Command line application for calculating the hash value of a file. Rash uses the
 * SHA2-256 (truncated to 224 and 256)
 * SHA2-512 (truncated to 224, 256, 384 and 512)
 * SHA3 (truncated to 224, 256, 384 and 512)
+* Groestl
 * Keccak (truncated to 224, 256, 384 and 512)
 
 ## Usage
