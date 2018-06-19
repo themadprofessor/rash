@@ -33,6 +33,15 @@ The Keccak algorithm is accessed with the sha3 subcommand.
         sha2         SHA2 algorithms
         sha3         SHA3 algorithms
         whirlpool    whirlpool algorithm
+        
+## Install
+Via cargo:
+
+    cargo install rash
+   
+Development version:
+
+    git clone https://github.com/themadprofessor/rash.git && cd rash && cargo install
 
 ## Examples
     rash md5 Readme.md
