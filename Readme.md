@@ -16,7 +16,7 @@ Command line application for calculating the hash value of a file. Rash uses the
 * Keccak (truncated to 224, 256, 384 and 512)
 
 ## Usage
-The Keccak and Shake algorithms are accessed with the sha3 subcommand.
+The Keccak algorithm is accessed with the sha3 subcommand.
 
     USAGE:
         rash [FILE] <SUBCOMMAND>
