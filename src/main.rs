@@ -140,7 +140,7 @@ fn args<'a>() -> ArgMatches<'a> {
                 .possible_values(&["256", "512"])
                 .default_value("512")))
         .subcommand(SubCommand::with_name("groestl")
-            ,.about("Groestl Algorithm")
+            .about("Groestl Algorithm")
             .arg(Arg::with_name("len")
                 .short("l")
                 .long("length")
