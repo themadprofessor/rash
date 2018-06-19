@@ -11,6 +11,14 @@ keywords = ["hash", "digest", "crypto", "sha3", "md5"]
 license = "MIT/Apache-2.0"
 
 [dependencies]
-rust-crypto = "0.2"
 failure = "0.1"
 clap = "2.31"
+md-5 = "0.7"
+digest = "0.7"
+blake2 = "0.7"
+ripemd160 = "0.7"
+sha-1 = "0.7"
+whirlpool = "0.7"
+sha2 = "0.7"
+sha3 = "0.7"
+generic-array = "0.9"
