@@ -130,9 +130,17 @@ fn args<'a>() -> ArgMatches<'a> {
                 .long_help("The SHA3 algorithm to use. If not given, sha3 is assumed. See len's help for length algorithm combinations.")
                 .takes_value(true)
                 .possible_values(&["sha3", "shake", "keccak"])
-                .default_value("sha3")))
+                .default_value("sha3"))
+            .arg(Arg::with_name("var")
+                .short("v")
+                .long("variant")
+                .help("Variant of Shake algorithm")
+                .long_help("Variant of Shake algorithm. Only used with shake algorithm.")
+                .takes_value(true)
+                .possible_values(&["256", "512"])
+                .default_value("512")))
         .subcommand(SubCommand::with_name("groestl")
-            .about("Groestl Algorithm")
+            ,.about("Groestl Algorithm")
             .arg(Arg::with_name("len")
                 .short("l")
                 .long("length")
@@ -188,12 +196,21 @@ fn get_alg<'a, R>(matches: &ArgMatches<'a>, input: &mut R) -> Result<String, Err
                     512 => calc_hash_fixed(sha3::Sha3_512::new(), input),
                     _ => Err(failure::err_msg("invalid length for SHA3"))
                 },
-                "shake" => calc_hash_extendable(sha3::Shake256::default(),
+                "shake" => match matches.value_of("var").unwrap_or_else(|| "512").parse().map_err(Error::from)? {
+                    256 => calc_hash_extendable(sha3::Shake256::default(),
                                                 input,
                                                 matches.value_of("len")
                                                     .ok_or_else(|| failure::err_msg("missing length"))?
                                                     .parse()
                                                     .map_err(Error::from)?),
+                    512 => calc_hash_extendable(sha3::Shake512::default(),
+                                                input,
+                                                matches.value_of("len")
+                                                    .ok_or_else(|| failure::err_msg("missing length"))?
+                                                    .parse()
+                                                    .map_err(Error::from)?),
+                    _ => Err(failure::err_msg("invalid length"))
+                },
                 "keccak" => match matches.value_of("len").unwrap_or_else(|| "512").parse().map_err(Error::from)? {
                     224 => calc_hash_fixed(sha3::Keccak224::new(), input),
                     256 => calc_hash_fixed(sha3::Keccak256::new(), input),
