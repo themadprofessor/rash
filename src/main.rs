@@ -8,7 +8,6 @@ extern crate sha1;
 extern crate whirlpool;
 extern crate sha2;
 extern crate sha3;
-extern crate generic_array;
 
 use failure::Error;
 use clap::{Arg, SubCommand, AppSettings, ArgMatches};
@@ -82,14 +81,14 @@ fn args<'a>() -> ArgMatches<'a> {
                 \n\t256:\t224, 256\
                 \n\t512:\t224, 256, 384, 512\n")
                 .possible_values(&["224", "256", "384", "512"])
-                .takes_value(true)
-                .required(true))
+                .default_value_ifs(&[("alg", Some("512"), "512"),("alg", Some("256"), "256")])
+                .takes_value(true))
             .arg(Arg::with_name("alg")
                 .short("a")
                 .long("algorithm")
                 .help("SHA2 algorithm")
                 .takes_value(true)
-                .required(true)
+                .default_value("512")
                 .possible_values(&["256", "512"])))
         .subcommand(SubCommand::with_name("sha3")
             .about("SHA3 algorithms")
@@ -98,12 +97,12 @@ fn args<'a>() -> ArgMatches<'a> {
                 .long("length")
                 .help("Length of output help")
                 .long_help("Length of the output hash. Supported lengths with algorithms:\
-                \n\talg:\tlen
+                \n\talg:\tlen\
                 \n\tsha3:\t244, 256, 384, 512\
                 \n\tkeccak:\t244, 256, 384, 512\n")
-                .possible_values(&["128", "244", "256", "384", "512"])
-                .takes_value(true)
-                .required(true))
+                .possible_values(&["244", "256", "384", "512"])
+                .default_value("512")
+                .takes_value(true))
             .arg(Arg::with_name("alg")
                 .short("a")
                 .long("algorithm")
