@@ -1,7 +1,7 @@
 # Rash
 ## A file hashing tool written in Rust
 
-Command line application for calculating the hash value of a file. Rash uses the [rust-crypto](https://crates.io/crates/rust-crypto) library, therefore currently supports
+Command line application for calculating the hash value of a file. Rash uses the [RustCrypto](https://github.com/RustCrypto/hashes) collection of libraries, therefore currently supports
 * md5
 * SHA1
 * Whirlpool
@@ -11,11 +11,7 @@ Command line application for calculating the hash value of a file. Rash uses the
 * SHA2-256 (truncated to 224 and 256)
 * SHA2-512 (truncated to 224, 256, 384 and 512)
 * SHA3 (truncated to 224, 256, 384 and 512)
-* Shake-128 
-* Shake-256
 * Keccak (truncated to 224, 256, 384 and 512)
-
-The [rust-crypto](https://crates.io/crates/rust-crypto) library currently has not been throughly audited for correctness as of yet, so do not use Rash if the correctness of the hashes is important.
 
 ## Usage
 The Shake and Keccak are accessed with the sha3 subcommand.
@@ -44,6 +40,6 @@ The Shake and Keccak are accessed with the sha3 subcommand.
     rash blake2b -l 64 Readme.md
 
 ## Crates used
-* [rust-crypto](https://crates.io/crates/rust-crypto) 
+* [RustCrypto](https://github.com/RustCrypto/hashes)
 * [clap](https://crates.io/crates/clap)
 * [failure](https://crates.io/crates/failure)
