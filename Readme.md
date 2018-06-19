@@ -29,17 +29,20 @@ The Keccak algorithm is accessed with the sha3 subcommand.
         blake2b      BLAKE2b algorithm
         blake2s      BLAKE2s algorithm
         help         Prints this message or the help of the given subcommand(s)
-        md5          md5 algorithm
+        md5          MD5 algorithm
         ripemd160    Ripemd160 algorithm
         sha1         SHA1 algorithm
         sha2         SHA2 algorithms
         sha3         SHA3 algorithms
-        whirlpool    whirlpool algorithm
+        shake        Shake algorithm
+        whirlpool    Whirlpool algorithm
         
 ## Install
 Via cargo:
 
     cargo install rash
+    
+Arch Linux: [AUR](https://aur.archlinux.org/packages/rash-git)
    
 Development version:
 
