@@ -112,7 +112,7 @@ fn args<'a>() -> ArgMatches<'a> {
                 .default_value("512")
                 .possible_values(&["256", "512"])))
         .subcommand(SubCommand::with_name("sha3")
-            .about("SHA3 algorithm")
+            .about("SHA3 algorithms")
             .arg(Arg::with_name("len")
                 .short("l")
                 .long("length")
@@ -120,7 +120,6 @@ fn args<'a>() -> ArgMatches<'a> {
                 .long_help("Length of the output hash. Supported lengths with algorithms:\
                 \n\talg:\tlen\
                 \n\tsha3:\t244, 256, 384, 512\
-                \n\tshake:\tany positive integer\
                 \n\tkeccak:\t244, 256, 384, 512\n")
                 .default_value_ifs(&[("alg", Some("sha3"), "512"), ("alg", Some("keccak"), "512")])
                 .takes_value(true))
@@ -131,15 +130,7 @@ fn args<'a>() -> ArgMatches<'a> {
                 .long_help("The SHA3 algorithm to use. If not given, sha3 is assumed. See len's help for length algorithm combinations.")
                 .takes_value(true)
                 .possible_values(&["sha3", "keccak"])
-                .default_value("sha3"))
-            .arg(Arg::with_name("var")
-                .short("v")
-                .long("variant")
-                .help("Variant of Shake algorithm")
-                .long_help("Variant of Shake algorithm. Only used with shake algorithm.")
-                .takes_value(true)
-                .possible_values(&["256", "512"])
-                .default_value("512")))
+                .default_value("sha3")))
         .subcommand(SubCommand::with_name("shake")
             .about("Shake algorithm")
             .arg(Arg::with_name("len")
