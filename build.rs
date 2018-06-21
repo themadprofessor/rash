@@ -12,10 +12,7 @@ fn main() {
             match shell.to_string_lossy().parse::<Shell>() {
                 Ok(s) => {
                     let mut app = build_cli();
-                    if let Err(e) = ::std::fs::create_dir_all("compilations") {
-                        eprintln!("{}", e);
-                    }
-                    app.gen_completions("rash", s, "compilations");
+                    app.gen_completions("rash", s, ".");
                 },
                 Err(e) => eprintln!("{}", e)
             }
