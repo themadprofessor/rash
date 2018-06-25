@@ -87,13 +87,13 @@ fn get_alg<'a, R>(matches: &ArgMatches<'a>, input: &mut R) -> Result<String, Err
                           .map_err(|_| failure::err_msg("invalid length"))?, input)
         },
         ("sha2", Some(matches)) => {
-            match matches.value_of("alg").unwrap().parse().map_err(Error::from)? {
+            match matches.value_of("alg").unwrap_or_else(|| "256").parse().map_err(Error::from)? {
                 256 => match matches.value_of("len").unwrap().parse().map_err(Error::from)? {
                     224 => calc_hash_fixed(sha2::Sha224::new(), input),
                     256 => calc_hash_fixed(sha2::Sha256::new(), input),
                     _ => Err(failure::err_msg("invalid length for SHA2-256"))
                 },
-                512 => match matches.value_of("len").unwrap().parse().map_err(Error::from)? {
+                512 => match matches.value_of("len").unwrap_or_else(|| "512").parse().map_err(Error::from)? {
                     224 => calc_hash_fixed(sha2::Sha512Trunc224::new(), input),
                     256 => calc_hash_fixed(sha2::Sha512Trunc256::new(), input),
                     384 => calc_hash_fixed(sha2::Sha384::new(), input),
