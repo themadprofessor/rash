@@ -12,7 +12,7 @@ fn main() {
             match shell.to_string_lossy().parse::<Shell>() {
                 Ok(s) => {
                     let mut app = build_cli();
-                    app.gen_completions("rash", s, "$OUT_DIR");
+                    app.gen_completions("rash", s, ::std::env::var("OUT_DIR").unwrap());
                 },
                 Err(e) => eprintln!("{}", e)
             }
