@@ -1,3 +1,5 @@
+#[cfg(test)] extern crate assert_cli;
+
 #[macro_use] extern crate clap;
 extern crate failure;
 extern crate md5;
@@ -17,6 +19,8 @@ use clap::ArgMatches;
 use std::io::{Read, BufReader};
 use std::fs::File;
 
+#[cfg(test)]
+mod tests;
 
 mod cli;
 
@@ -73,12 +77,12 @@ fn get_alg<'a, R>(matches: &ArgMatches<'a>, input: &mut R) -> Result<String, Err
         ("sha1", _) => calc_hash_fixed(sha1::Sha1::new(), input),
         ("ripemd160", _) => calc_hash_fixed(ripemd160::Ripemd160::new(), input),
         ("blake2b", Some(matches)) => {
-            let len = matches.value_of("len").unwrap().parse().map_err(Error::from)?;
+            let len = matches.value_of("len").unwrap().parse::<usize>().map_err(Error::from)?;
             calc_hash_fixed(<blake2::Blake2b as VariableOutput>::new(len)
                           .map_err(|_| failure::err_msg("invalid length"))?, input)
         },
         ("blake2s", Some(matches)) => {
-            let len = matches.value_of("len").unwrap().parse().map_err(Error::from)?;
+            let len = matches.value_of("len").unwrap().parse::<usize>().map_err(Error::from)?;
             calc_hash_fixed(<blake2::Blake2s  as VariableOutput>::new(len)
                           .map_err(|_| failure::err_msg("invalid length"))?, input)
         },
@@ -136,7 +140,7 @@ fn get_alg<'a, R>(matches: &ArgMatches<'a>, input: &mut R) -> Result<String, Err
             }
         },
         ("groestl", Some(matches)) => {
-            let len = matches.value_of("len").unwrap().parse().map_err(Error::from)?;
+            let len = matches.value_of("len").unwrap().parse::<usize>().map_err(Error::from)?;
             if len > 0 && len < 33 {
                 calc_hash_var(groestl::GroestlSmall::new(len).map_err(|_| failure::err_msg("invalid length"))?, input)
             } else if len > 32 && len < 65 {

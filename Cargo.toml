@@ -27,3 +27,7 @@ whirlpool = "0.7"
 sha2 = "0.7"
 sha3 = "0.7"
 groestl = "0.7"
+
+[dev-dependencies]
+assert_cli = "0.6"
+test-case-derive = "0.2"
