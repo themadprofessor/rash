@@ -51,12 +51,12 @@ fn calc_hash_extendable<D, R>(mut digest: D, input: &mut R, len: usize) -> Resul
 }
 
 fn fill<D, R>(digest: &mut D, input: &mut R) -> Result<(), Error> where D: Input, R: Read {
-    let mut buf = [0 as u8; 1024];
+    let mut buf = [0u8; 1024];
     loop {
-        if input.read(&mut buf).map_err(Error::from)? == 0 {
+        let n = input.read(&mut buf).map_err(Error::from)?;
+        digest.process(&buf[..n]);
+        if n == 0 || n < 1024 {
             break;
-        } else {
-            digest.process(&buf);
         }
     };
     Ok(())
