@@ -1,4 +1,4 @@
-use clap::{App, Arg, SubCommand, AppSettings, ArgMatches};
+use clap::{App, Arg, SubCommand, AppSettings};
 
 pub fn build_cli() -> App<'static, 'static>{
     app_from_crate!()
